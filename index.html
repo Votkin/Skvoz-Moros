@@ -87,6 +87,14 @@ button{font:inherit;cursor:pointer}
     <h2>Пять огней</h2>
     <ul class="levels" id="levels"></ul>
     <p id="largi" style="font-size:1.05rem"></p>
+    <div id="donate" hidden>
+  <p>Нравится игра? Поддержи автора звёздами Telegram:</p>
+  <div class="row" style="margin-bottom:14px">
+    <button class="btn small" data-link=https://t.me/$9_L-vE-00UnfGAAAsfwkOKp-ibc">⭐ 25</button>
+    <button class="btn small" data-link="https://t.me/$m6YFC0-00UngGAAAcG0ARaQhib8">⭐ 100</button>
+    <button class="btn small" data-link="https://t.me/$uL9AgU-00UnhGAAAtCLS1iMGGaE">⭐ 250</button>
+  </div>
+</div>
     <div class="row"><button class="btn ghost small" id="b-reset">Стереть прогресс</button></div>
   </div>
 </section>
@@ -1235,7 +1243,19 @@ $('b-lose-map').onclick=()=>show('s-map');
 $('b-end-map').onclick=()=>show('s-map');
 $('b-reset').onclick=()=>{ if(!confirm('Стереть весь прогресс?')) return; save={started:false,lvl:{},largi:[]}; persist(); renderMap(); };
 
-loadLocal(); resize(); refreshTitle(); loadCloud(refreshTitle);
+if (tg && tgv('6.1')) {
+  document.getElementById('donate').hidden = false;
+  document.querySelectorAll('#donate [data-link]').forEach(b => {
+    b.onclick = () => tg.openInvoice(b.dataset.link, status => {
+      if (status === 'paid') {
+        hap('ok'); save.donor = true; persist();
+        const msg = 'Спасибо! Маяк светит ярче 🔦';
+        if (tgv('6.2')) tg.showAlert(msg); else alert(msg);
+      }
+    });
+  });
+}
+  loadLocal(); resize(); refreshTitle(); loadCloud(refreshTitle);
 requestAnimationFrame(frame);
 
 </script>
